@@ -163,4 +163,4 @@ bool Ray::intersectsRect(const FRect& rect) const {
 	return nearNorm.x < farNorm.y&& nearNorm.y > farNorm.x && nearNorm.max() <= 1;
 }
 
-static std::ostream& operator<<(std::ostream& os, const Ray& r) { return os << (std::string)r; }
+std::ostream& operator<<(std::ostream& os, const Ray& r) { return os << static_cast<std::string>(r); }

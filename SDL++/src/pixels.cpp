@@ -1,6 +1,6 @@
 #include "pixels.hpp"
 
-using namespace SDL;
+namespace SDL {
 
 Palette::Palette(int ncolours) : palette(SDL_AllocPalette(ncolours)) {}
 Palette::~Palette() { SDL_FreePalette(palette); }
@@ -27,8 +27,10 @@ PixelFormatEnum MasksToPixelFormatEnum(int bpp, Uint32 Rmask, Uint32 Gmask, Uint
 	return (PixelFormatEnum)SDL_MasksToPixelFormatEnum(bpp, Rmask, Gmask, Bmask, Amask);
 }
 
-Uint16* CalculateGammaRamp(float gamma) {
-	Uint16* ramp = new Uint16[256];
-	SDL_CalculateGammaRamp(gamma, ramp);
+GammaRamp CalculateGammaRamp(float gamma) {
+    GammaRamp ramp;
+    SDL_CalculateGammaRamp(gamma, ramp.data());
 	return ramp;
 }
+
+} // namespace SDL

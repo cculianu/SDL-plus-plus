@@ -8,7 +8,7 @@ namespace SDL {
 	 *
 	 * \note This value wraps if the program runs for more than ~49 days.
 	 */
-	static Uint32 GetTicks() { return SDL_GetTicks(); }
+    inline Uint32 GetTicks() { return SDL_GetTicks(); }
 
 	/**
 	 * \brief Compare SDL ticks values, and return true if A has passed B
@@ -19,16 +19,16 @@ namespace SDL {
 	 *      ... do work until timeout has elapsed
 	 *  }
 	 */
-	static bool TicksPassed(Uint32 A, Uint32 B) { return (Sint32)(B - A) <= 0; }
+    inline bool TicksPassed(Uint32 A, Uint32 B) { return static_cast<Sint32>(B - A) <= 0; }
 
 	// \brief Get the current value of the high resolution counter
-	static Uint64 GetPerformanceCounter() { return SDL_GetPerformanceCounter(); }
+    inline Uint64 GetPerformanceCounter() { return SDL_GetPerformanceCounter(); }
 
 	// \brief Get the count per second of the high resolution counter
-	static Uint64 GetPerformanceFrequency() { return SDL_GetPerformanceFrequency(); }
+    inline Uint64 GetPerformanceFrequency() { return SDL_GetPerformanceFrequency(); }
 
 	// \brief Wait a specified number of milliseconds before returning.
-	static void Delay(Uint32 ms) { return SDL_Delay(ms);  }
+    inline void Delay(Uint32 ms) { return SDL_Delay(ms);  }
 
 	/**
 	 *  Function prototype for the timer callback function.
@@ -38,10 +38,10 @@ namespace SDL {
 	 *  passed in, the periodic alarm continues, otherwise a new alarm is
 	 *  scheduled.  If the callback returns 0, the periodic alarm is cancelled.
 	 */
-	typedef SDL_TimerCallback TimerCallback;
+    using TimerCallback = SDL_TimerCallback;
 
 	// Definition of the timer ID type.
-	typedef SDL_TimerID TimerID;
+    using TimerID = SDL_TimerID;
 
 	struct Timer {
 		TimerID id;

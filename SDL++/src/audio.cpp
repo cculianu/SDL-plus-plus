@@ -2,20 +2,12 @@
 
 using namespace SDL;
 
-constexpr Uint8 AudioFormat::BitSize() const { return format & SDL_AUDIO_MASK_BITSIZE; }
-constexpr bool AudioFormat::IsFloat() const { return format & SDL_AUDIO_MASK_DATATYPE; }
-constexpr bool AudioFormat::IsBigEndian() const { return format & SDL_AUDIO_MASK_ENDIAN; }
-constexpr bool AudioFormat::IsSigned() const { return format & SDL_AUDIO_MASK_SIGNED; }
-constexpr bool AudioFormat::IsInt() const { return !IsFloat(); }
-constexpr bool AudioFormat::IsLittleEndian() const { return !IsBigEndian(); }
-constexpr bool AudioFormat::IsUnsigned() const { return !IsSigned(); }
-  
-Audio::Audio(AudioSpec& desired, AudioSpec& obtained) {
-    freeAudio = SDL_OpenAudio(&desired, &obtained) != -1;
+Audio::Audio(const AudioSpec& desired, AudioSpec& obtained) {
+    freeAudio = SDL_OpenAudio(const_cast<AudioSpec *>(&desired), &obtained) != -1;
     error = !freeAudio ? -1 : 0;
 }   
-Audio::Audio(AudioSpec& desired) {
-    freeAudio = SDL_OpenAudio(&desired, NULL) != -1;
+Audio::Audio(const AudioSpec& desired) {
+    freeAudio = SDL_OpenAudio(const_cast<AudioSpec *>(&desired), NULL) != -1;
     error = !freeAudio ? -1 : 0;
 }
 Audio::~Audio() {
@@ -27,10 +19,10 @@ const char* Audio::GetDriver(int index) { return SDL_GetAudioDriver(index); }
 
 const char* Audio::GetCurrentDriver() { return SDL_GetCurrentAudioDriver(); }
 
-AudioStatus Audio::GetStatus() { return (AudioStatus)SDL_GetAudioStatus(); }
+AudioStatus Audio::GetStatus() const { return AudioStatus(SDL_GetAudioStatus()); }
 
-Audio& Audio::Pause(int pause_on) { SDL_PauseAudio(pause_on); return *this; }
-Audio& Audio::Play() { SDL_PauseAudio(0); return *this; }
+Audio& Audio::Pause(bool pause_on) { SDL_PauseAudio(int(pause_on)); return *this; }
+Audio& Audio::Play() { return Pause(false); }
 
 Audio& Audio::Lock() { SDL_LockAudio(); return *this; }
 Audio& Audio::Unlock() { SDL_UnlockAudio(); return *this; };

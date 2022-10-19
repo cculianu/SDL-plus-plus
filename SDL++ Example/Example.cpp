@@ -2,11 +2,11 @@
 
 using namespace SDL;
 
-SDL_HitTestResult hit_test(SDL_Window* win, const SDL_Point* point, void* data) {
-	return (SDL_HitTestResult)(point->y < 50 ? HitTestResult::DRAGGABLE : HitTestResult::NORMAL);
+SDL_HitTestResult hit_test(SDL_Window*, const SDL_Point* point, void*) {
+    return SDL_HitTestResult(point->y < 50 ? HitTestResult::DRAGGABLE : HitTestResult::NORMAL);
 }
 
-int main(int argc, char* argv[]) {
+int main() {
 	Init();
 
 	Input input;
@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 	}};
 	input.RegisterTypedEventListener(Event::Type::MOUSEBUTTONDOWN, toggle_visibility);
 
-	for (int frame = 0; input.running; frame++) {
+    for (int frame [[maybe_unused]] = 0; input.running; frame++) {
 		input.Update();
 
 		if (mouse.GetButton(Button::LEFT))

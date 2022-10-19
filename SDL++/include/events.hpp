@@ -430,7 +430,8 @@ namespace SDL {
 				scancode_up_at[scancode] = timestamp;
 				scancodes[(int)scancode] = false;
 			}	break;
-
+            default:
+                break; // prevent warnings
 			}
 
 			event_at[e.type] = timestamp;

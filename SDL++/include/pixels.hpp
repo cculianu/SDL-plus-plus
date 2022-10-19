@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SDL_pixels.h>
+
+#include <array>
 #include <vector>
 
 namespace SDL {
@@ -122,8 +124,8 @@ namespace SDL {
 		EXTERNAL_OES = SDL_PIXELFORMAT_EXTERNAL_OES // Android video texture format
 	};
 
-	typedef SDL_Color Color;
-	typedef SDL_Colour Colour;
+    using Color = SDL_Color;
+    using Colour = SDL_Colour;
 
 	struct Palette
 	{
@@ -205,8 +207,9 @@ namespace SDL {
 	 *
 	 *  \return The pixel format, or ::SDL_PIXELFORMAT_UNKNOWN if the conversion wasn't possible.
 	 */
-	static PixelFormatEnum MasksToPixelFormatEnum(int bpp, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask);
+    PixelFormatEnum MasksToPixelFormatEnum(int bpp, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask);
 
 	// Calculate a 256 entry gamma ramp for a gamma value.
-	static Uint16* CalculateGammaRamp(float gamma);
+    using GammaRamp = std::array<Uint16, 256>;
+    GammaRamp CalculateGammaRamp(float gamma);
 }

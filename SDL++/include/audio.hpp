@@ -24,18 +24,19 @@ namespace SDL {
      *  There are macros in SDL 2.0 and later to query these bits.
      */
     struct AudioFormat {
-        SDL_AudioFormat format;
+        SDL_AudioFormat format = AUDIO_U8;
 
-        constexpr Uint8 BitSize() const;
-        constexpr bool IsFloat() const;
-        constexpr bool IsBigEndian() const;
-        constexpr bool IsSigned() const;
-        constexpr bool IsInt() const;
-        constexpr bool IsLittleEndian() const;
-        constexpr bool IsUnsigned() const;
+        constexpr Uint8 BitSize() const { return format & SDL_AUDIO_MASK_BITSIZE; }
+        constexpr bool IsFloat() const { return format & SDL_AUDIO_MASK_DATATYPE; }
+        constexpr bool IsBigEndian() const { return format & SDL_AUDIO_MASK_ENDIAN; }
+        constexpr bool IsSigned() const { return format & SDL_AUDIO_MASK_SIGNED; }
+        constexpr bool IsInt() const { return !IsFloat(); }
+        constexpr bool IsLittleEndian() const { return !IsBigEndian(); }
+        constexpr bool IsUnsigned() const { return !IsSigned(); }
+
     };
 
-    typedef SDL_AudioCallback AudioCallback;
+    using AudioCallback = SDL_AudioCallback;
     /**
      *  The calculated values in this structure are calculated by SDL::OpenAudio().
      *
@@ -48,8 +49,8 @@ namespace SDL {
      *  7:  FL FR FC LFE BC SL SR       (6.1 surround)
      *  8:  FL FR FC LFE BL BR SL SR    (7.1 surround)
      */
-    typedef SDL_AudioSpec AudioSpec;
-    typedef SDL_AudioFilter AudioFilter;
+    using AudioSpec = SDL_AudioSpec;
+    using AudioFilter = SDL_AudioFilter;
     enum class AudioStatus {
         STOPPED = SDL_AUDIO_STOPPED,
         PLAYING = SDL_AUDIO_PLAYING,
@@ -77,8 +78,9 @@ namespace SDL {
         F32SYS = AUDIO_F32SYS
     };
 
-    struct Audio {
+    class Audio {
         bool freeAudio;
+    public:
         int error = 0;
 
         /**
@@ -126,7 +128,7 @@ namespace SDL {
          *  may modify the requested size of the audio buffer, you should allocate
          *  any local mixing buffers after you open the audio device.
          */
-        Audio(AudioSpec& desired, AudioSpec& obtained);
+        Audio(const AudioSpec& desired, AudioSpec& obtained);
 
         /**
          *  This function opens the audio device with the desired parameters, and
@@ -170,7 +172,7 @@ namespace SDL {
          *  may modify the requested size of the audio buffer, you should allocate
          *  any local mixing buffers after you open the audio device.
          */
-        Audio(AudioSpec& desired);
+        Audio(const AudioSpec& desired);
 
         // This function shuts down audio processing and closes the audio device.
         ~Audio();
@@ -191,10 +193,10 @@ namespace SDL {
         static const char* GetCurrentDriver();
 
         // Get the current audio state.
-        AudioStatus GetStatus();
+        AudioStatus GetStatus() const;
 
         // This function pauses and unpauses the audio callback processing.
-        Audio& Pause(int pause_on);
+        Audio& Pause(bool pause_on);
         /**
          *  This function unpauses the audio callback processing.
          *  It should be called after opening the audio device to start
@@ -227,11 +229,15 @@ namespace SDL {
          *  for backwards compatibility and when you don't care about multiple,
          *  specific, or capture devices.
          */
-        typedef SDL_AudioDeviceID DeviceID;
+        using DeviceID = SDL_AudioDeviceID;
 
         DeviceID ID;
         int error = 0;
+
+    private:
         bool freeDevice;
+
+    public:
 
         AudioDevice(DeviceID ID, bool free = false);
         /**

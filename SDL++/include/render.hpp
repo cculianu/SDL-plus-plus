@@ -20,11 +20,11 @@ namespace SDL {
 			TARGETTEXTURE = SDL_RENDERER_TARGETTEXTURE     // The renderer supports rendering to texture
 		};
 		// Information on the capabilities of a render driver or context.
-		typedef SDL_RendererInfo Info;
+        using Info = SDL_RendererInfo;
 
 		SDL_Renderer* renderer = nullptr;
 		bool freeRenderer = false;
-		int error = 0;
+        mutable int error = 0;
 
 		Renderer(const Renderer& r);
 		Renderer(Renderer&& r) noexcept;
@@ -92,7 +92,7 @@ namespace SDL {
 		 *
 		 *  \return   The scaling factor
 		 */
-		FPoint GetScale();
+        FPoint GetScale() const;
 		/**
 		 *  \brief    Get the drawing scale for the current target.
 		 *
@@ -767,7 +767,7 @@ namespace SDL {
 		 *            management on a particular display.  Normally there is only one, but
 		 *            some drivers may have several available with different capabilities.
 		 */
-		static int GetNumDrivers();
+        static int GetNumDrivers();
 		/**
 		 *  \brief    Get information about a specific 2D rendering driver for the current
 		 *            display.
@@ -783,7 +783,7 @@ namespace SDL {
 		Renderer& GetInfo(Info& info);
 
 		// Get the output size in pixels of a rendering context.
-		Point GetOutputSize();
+        Point GetOutputSize() const;
 		// Get the output size in pixels of a rendering context.
 		Renderer& GetOutputSize(Point& size);
 		// Get the output size in pixels of a rendering context.
@@ -794,7 +794,7 @@ namespace SDL {
 		 *
 		 * \return    true if supported, false if not.
 		 */
-		bool TargetSupported();
+        bool TargetSupported() const;
 		/**
 		 * \brief     Determines whether a window supports the use of render targets
 		 *
@@ -815,7 +815,7 @@ namespace SDL {
 		 *
 		 * \return    The current render target
 		 */
-		Texture GetTarget();
+        Texture GetTarget() const;
 		/**
 		 * \brief     Get the current render target or NULL for the default render target.
 		 *
@@ -866,7 +866,7 @@ namespace SDL {
 		 *
 		 *  \return   The size of the logical resolution
 		 */
-		Point GetLogicalSize();
+        Point GetLogicalSize() const;
 		/**
 		 *  \brief    Get device independent resolution for rendering
 		 *
@@ -892,7 +892,7 @@ namespace SDL {
 		 */
 		Renderer& SetIntegerScale(bool enable);
 		// Get whether integer scales are forced for resolution-independent rendering
-		bool GetIntegerScale();
+        bool GetIntegerScale() const;
 		// Get whether integer scales are forced for resolution-independent rendering
 		Renderer& GetIntegerScale(bool& enabled);
 
@@ -917,7 +917,7 @@ namespace SDL {
 		Renderer& FillViewport();
 
 		// Get the drawing area for the current target.
-		Rect GetViewport();
+        Rect GetViewport() const;
 		// Get the drawing area for the current target.
 		Renderer& GetViewport(Rect& rect);
 
@@ -943,7 +943,7 @@ namespace SDL {
 		 *  \return   A rect filled in with the current clip rectangle, or
 		 *            an empty rectangle if clipping is disabled.
 		 */
-		Rect GetClipRect();
+        Rect GetClipRect() const;
 		/**
 		 *  \brief    Get the clip rectangle for the current target.
 		 *
@@ -953,7 +953,7 @@ namespace SDL {
 		Renderer& GetClipRect(Rect& rect);
 
 		// Get whether clipping is enabled on the given renderer.
-		bool IsClipEnabled();
+        bool IsClipEnabled() const;
 		// Get whether clipping is enabled on the given renderer.
 		Renderer& IsClipEnabled(bool& enabled);
 
@@ -990,13 +990,13 @@ namespace SDL {
 		 *
 		 *  \return   CAMetalLayer* (as void*) on success, or NULL if the renderer isn't a Metal renderer
 		 */
-		void* GetMetalLayer();
+        void* GetMetalLayer() const;
 		/**
 		 *  \brief    Get the Metal command encoder for the current frame
 		 *
 		 *  \return   id<MTLRenderCommandEncoder> on success, or NULL if the renderer isn't a Metal renderer
 		 */
-		void* GetMetalCommandEncoder();
+        void* GetMetalCommandEncoder() const;
 	};
 
 	// An efficient driver-specific representation of pixel data
@@ -1027,12 +1027,14 @@ namespace SDL {
 		SDL_Texture* texture;
 		bool freeTexture = false;
 
-		Texture();
+        Texture() noexcept : Texture(nullptr, false) {}
 		Texture(Texture& txt);
-		Texture(Texture&& txt) noexcept;
-		Texture& operator=(Texture that);
+        Texture(const Texture& txt) noexcept : texture{txt.texture}, freeTexture{false} {}
+        Texture(Texture&& txt) noexcept;
+        Texture& operator=(Texture&& that);
+        Texture& operator=(const Texture& that);
 
-		Texture(SDL_Texture* texture, bool free = true);
+        Texture(SDL_Texture* texture, bool free = true) noexcept;
 		/**
 		 *  \brief    Create a texture for a rendering context.
 		 *
@@ -1349,77 +1351,77 @@ namespace SDL {
 	 */
 	int CreateWindowAndRenderer(const Point& size, Window& window, Renderer& renderer, Uint32 window_flags = SDL_WINDOW_SHOWN & SDL_WINDOW_RESIZABLE);
 
-	const Colour VERY_LIGHT_RED = { 255, 191, 191 };
-	const Colour VERY_LIGHT_ORANGE = { 255, 223, 191 };
-	const Colour VERY_LIGHT_YELLOW = { 255, 255, 191 };
-	const Colour VERY_LIGHT_LIME = { 223, 255, 191 };
-	const Colour VERY_LIGHT_GREEN = { 191, 255, 191 };
-	const Colour VERY_LIGHT_TURQUOISE = { 191, 255, 223 };
-	const Colour VERY_LIGHT_CYAN = { 191, 255, 255 };
-	const Colour VERY_LIGHT_AZURE = { 191, 223, 255 };
-	const Colour VERY_LIGHT_BLUE = { 191, 191, 255 };
-	const Colour VERY_LIGHT_VIOLET = { 223, 191, 255 };
-	const Colour VERY_LIGHT_MAGENTA = { 255, 191, 255 };
-	const Colour VERY_LIGHT_RASPBERRY = { 255, 191, 223 };
+    inline constexpr Colour VERY_LIGHT_RED = { 255, 191, 191, 255 };
+    inline constexpr Colour VERY_LIGHT_ORANGE = { 255, 223, 191, 255 };
+    inline constexpr Colour VERY_LIGHT_YELLOW = { 255, 255, 191, 255 };
+    inline constexpr Colour VERY_LIGHT_LIME = { 223, 255, 191, 255 };
+    inline constexpr Colour VERY_LIGHT_GREEN = { 191, 255, 191, 255 };
+    inline constexpr Colour VERY_LIGHT_TURQUOISE = { 191, 255, 223, 255 };
+    inline constexpr Colour VERY_LIGHT_CYAN = { 191, 255, 255, 255 };
+    inline constexpr Colour VERY_LIGHT_AZURE = { 191, 223, 255, 255 };
+    inline constexpr Colour VERY_LIGHT_BLUE = { 191, 191, 255, 255 };
+    inline constexpr Colour VERY_LIGHT_VIOLET = { 223, 191, 255, 255 };
+    inline constexpr Colour VERY_LIGHT_MAGENTA = { 255, 191, 255, 255 };
+    inline constexpr Colour VERY_LIGHT_RASPBERRY = { 255, 191, 223, 255 };
 
-	const Colour LIGHT_RED = { 255, 128, 128 };
-	const Colour LIGHT_ORANGE = { 255, 191, 128 };
-	const Colour LIGHT_YELLOW = { 255, 255, 128 };
-	const Colour LIGHT_LIME = { 191, 255, 128 };
-	const Colour LIGHT_GREEN = { 128, 255, 128 };
-	const Colour LIGHT_TURQUOISE = { 128, 255, 191 };
-	const Colour LIGHT_CYAN = { 128, 255, 255 };
-	const Colour LIGHT_AZURE = { 128, 191, 255 };
-	const Colour LIGHT_BLUE = { 128, 128, 255 };
-	const Colour LIGHT_VIOLET = { 191, 128, 255 };
-	const Colour LIGHT_MAGENTA = { 255, 128, 255 };
-	const Colour LIGHT_RASPBERRY = { 255, 128, 191 };
+    inline constexpr Colour LIGHT_RED = { 255, 128, 128, 255 };
+    inline constexpr Colour LIGHT_ORANGE = { 255, 191, 128, 255 };
+    inline constexpr Colour LIGHT_YELLOW = { 255, 255, 128, 255 };
+    inline constexpr Colour LIGHT_LIME = { 191, 255, 128, 255 };
+    inline constexpr Colour LIGHT_GREEN = { 128, 255, 128, 255 };
+    inline constexpr Colour LIGHT_TURQUOISE = { 128, 255, 191, 255 };
+    inline constexpr Colour LIGHT_CYAN = { 128, 255, 255, 255 };
+    inline constexpr Colour LIGHT_AZURE = { 128, 191, 255, 255 };
+    inline constexpr Colour LIGHT_BLUE = { 128, 128, 255, 255 };
+    inline constexpr Colour LIGHT_VIOLET = { 191, 128, 255, 255 };
+    inline constexpr Colour LIGHT_MAGENTA = { 255, 128, 255, 255 };
+    inline constexpr Colour LIGHT_RASPBERRY = { 255, 128, 191, 255 };
 
-	const Colour RED = { 255, 0, 0 };
-	const Colour ORANGE = { 255, 128, 0 };
-	const Colour YELLOW = { 255, 255, 0 };
-	const Colour LIME = { 128, 255, 0 };
-	const Colour GREEN = { 0, 255, 0 };
-	const Colour TURQUOISE = { 0, 255, 128 };
-	const Colour CYAN = { 0, 255, 255 };
-	const Colour AZURE = { 0, 128, 255 };
-	const Colour BLUE = { 0, 0, 255 };
-	const Colour VIOLET = { 128, 0, 255 };
-	const Colour MAGENTA = { 255, 0, 255 };
-	const Colour RASPBERRY = { 255, 0, 128 };
+    inline constexpr Colour RED = { 255, 0, 0, 255 };
+    inline constexpr Colour ORANGE = { 255, 128, 0, 255 };
+    inline constexpr Colour YELLOW = { 255, 255, 0, 255 };
+    inline constexpr Colour LIME = { 128, 255, 0, 255 };
+    inline constexpr Colour GREEN = { 0, 255, 0, 255 };
+    inline constexpr Colour TURQUOISE = { 0, 255, 128, 255 };
+    inline constexpr Colour CYAN = { 0, 255, 255, 255 };
+    inline constexpr Colour AZURE = { 0, 128, 255, 255 };
+    inline constexpr Colour BLUE = { 0, 0, 255, 255 };
+    inline constexpr Colour VIOLET = { 128, 0, 255, 255 };
+    inline constexpr Colour MAGENTA = { 255, 0, 255, 255 };
+    inline constexpr Colour RASPBERRY = { 255, 0, 128, 255 };
 
-	const Colour DARK_RED = { 128, 0, 0 };
-	const Colour DARK_ORANGE = { 128, 64, 0 };
-	const Colour DARK_YELLOW = { 128, 128, 0 };
-	const Colour DARK_LIME = { 64, 128, 0 };
-	const Colour DARK_GREEN = { 0, 128, 0 };
-	const Colour DARK_TURQUOISE = { 0, 128, 64 };
-	const Colour DARK_CYAN = { 0, 128, 128 };
-	const Colour DARK_AZURE = { 0, 64, 128 };
-	const Colour DARK_BLUE = { 0, 0, 128 };
-	const Colour DARK_VIOLET = { 64, 0, 128 };
-	const Colour DARK_MAGENTA = { 128, 0, 128 };
-	const Colour DARK_RASPBERRY = { 128, 0, 64 };
+    inline constexpr Colour DARK_RED = { 128, 0, 0, 255 };
+    inline constexpr Colour DARK_ORANGE = { 128, 64, 0, 255 };
+    inline constexpr Colour DARK_YELLOW = { 128, 128, 0, 255 };
+    inline constexpr Colour DARK_LIME = { 64, 128, 0, 255 };
+    inline constexpr Colour DARK_GREEN = { 0, 128, 0, 255 };
+    inline constexpr Colour DARK_TURQUOISE = { 0, 128, 64, 255 };
+    inline constexpr Colour DARK_CYAN = { 0, 128, 128, 255 };
+    inline constexpr Colour DARK_AZURE = { 0, 64, 128, 255 };
+    inline constexpr Colour DARK_BLUE = { 0, 0, 128, 255 };
+    inline constexpr Colour DARK_VIOLET = { 64, 0, 128, 255 };
+    inline constexpr Colour DARK_MAGENTA = { 128, 0, 128, 255 };
+    inline constexpr Colour DARK_RASPBERRY = { 128, 0, 64, 255 };
 
-	const Colour VERY_DARK_RED = { 64, 0, 0 };
-	const Colour VERY_DARK_ORANGE = { 64, 32, 0 };
-	const Colour VERY_DARK_YELLOW = { 64, 64, 0 };
-	const Colour VERY_DARK_LIME = { 32, 64, 0 };
-	const Colour VERY_DARK_GREEN = { 0, 64, 0 };
-	const Colour VERY_DARK_TURQUOISE = { 0, 64, 32 };
-	const Colour VERY_DARK_CYAN = { 0, 64, 64 };
-	const Colour VERY_DARK_AZURE = { 0, 32, 64 };
-	const Colour VERY_DARK_BLUE = { 0, 0, 64 };
-	const Colour VERY_DARK_VIOLET = { 32, 0, 64 };
-	const Colour VERY_DARK_MAGENTA = { 64, 0, 64 };
-	const Colour VERY_DARK_RASPBERRY = { 64, 0, 32 };
+    inline constexpr Colour VERY_DARK_RED = { 64, 0, 0, 255 };
+    inline constexpr Colour VERY_DARK_ORANGE = { 64, 32, 0, 255 };
+    inline constexpr Colour VERY_DARK_YELLOW = { 64, 64, 0, 255 };
+    inline constexpr Colour VERY_DARK_LIME = { 32, 64, 0, 255 };
+    inline constexpr Colour VERY_DARK_GREEN = { 0, 64, 0, 255 };
+    inline constexpr Colour VERY_DARK_TURQUOISE = { 0, 64, 32, 255 };
+    inline constexpr Colour VERY_DARK_CYAN = { 0, 64, 64, 255 };
+    inline constexpr Colour VERY_DARK_AZURE = { 0, 32, 64, 255 };
+    inline constexpr Colour VERY_DARK_BLUE = { 0, 0, 64, 255 };
+    inline constexpr Colour VERY_DARK_VIOLET = { 32, 0, 64, 255 };
+    inline constexpr Colour VERY_DARK_MAGENTA = { 64, 0, 64, 255 };
+    inline constexpr Colour VERY_DARK_RASPBERRY = { 64, 0, 32, 255 };
 
-	const Colour WHITE = { 255, 255, 255 };
-	const Colour LIGHT_GREY = { 191, 191, 191 };
-	const Colour GREY = { 128, 128, 128 };
-	const Colour DARK_GREY = { 64, 64, 64 };
-	const Colour VERY_DARK_GREY = { 32, 32, 32 };
-	const Colour BLACK = { 0, 0, 0 };
+    inline constexpr Colour WHITE = { 255, 255, 255, 255 };
+    inline constexpr Colour LIGHT_GREY = { 191, 191, 191, 255 };
+    inline constexpr Colour GREY = { 128, 128, 128, 255 };
+    inline constexpr Colour DARK_GREY = { 64, 64, 64, 255 };
+    inline constexpr Colour VERY_DARK_GREY = { 32, 32, 32, 255 };
+    inline constexpr Colour BLACK = { 0, 0, 0, 255 };
 
 	namespace GL {
 		/**

@@ -24,7 +24,6 @@ namespace SDL {
 
 		FPoint();
 		FPoint(float x, float y);
-		FPoint(const FPoint& v);
 		FPoint(const SDL_FPoint& point);
 
 		static FPoint FromAngle(float angle, float mag = 1.0f);
@@ -123,7 +122,6 @@ namespace SDL {
 
 		Point();
 		Point(int x, int y);
-		Point(const Point& v);
 		Point(const SDL_Point& point);
 
 		operator FPoint() const;
@@ -227,7 +225,6 @@ namespace SDL {
 		FRect(float x, float y, const FPoint& size);
 		FRect(const FPoint& pos, float w, float h);
 		FRect(const FPoint& pos, const FPoint& size);
-		FRect(const FRect& rect);
 		FRect(const SDL_FRect& rect);
 
 		operator std::string() const;

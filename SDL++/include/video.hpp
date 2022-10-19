@@ -77,7 +77,7 @@ namespace SDL {
 	typedef SDL_HitTest HitTest;
 
 	// Get the number of video drivers compiled into SDL
-	static int GetNumVideoDrivers() { return SDL_GetNumVideoDrivers(); }
+    inline int GetNumVideoDrivers() { return SDL_GetNumVideoDrivers(); }
 
 	/**
 	 *  \brief    Get the name of a built in video driver.
@@ -85,7 +85,7 @@ namespace SDL {
 	 *  \note     The video drivers are presented in the order in which they are
 	 *            normally checked during initialization.
 	 */
-	static const char* GetVideoDriver(int index) { return SDL_GetVideoDriver(index); }
+    inline const char* GetVideoDriver(int index) { return SDL_GetVideoDriver(index); }
 
 	/**
 	 *  \brief    Initialize the video subsystem, specifying a video driver.
@@ -98,7 +98,7 @@ namespace SDL {
 	 *
 	 *  \return   0 on success, -1 on error
 	 */
-	static int VideoInit(const char* driver_name) { return SDL_VideoInit(driver_name); }
+    inline int VideoInit(const char* driver_name) { return SDL_VideoInit(driver_name); }
 
 	/**
 	 *  \brief    Initialize the video subsystem with the default video driver.
@@ -109,14 +109,14 @@ namespace SDL {
 	 *
 	 *  \return   0 on success, -1 on error
 	 */
-	static int VideoInit() { return SDL_VideoInit(NULL); }
+    inline int VideoInit() { return SDL_VideoInit(NULL); }
 
 	/**
 	 *  \brief    Shuts down the video subsystem.
 	 *
 	 *  \details  This function closes all windows, and restores the original video mode.
 	 */
-	static void VideoQuit() { SDL_VideoQuit(); }
+    inline void VideoQuit() { SDL_VideoQuit(); }
 
 	/**
 	 *  \brief    Returns the name of the currently initialized video driver.
@@ -124,7 +124,7 @@ namespace SDL {
 	 *  \return   The name of the current video driver or NULL if no driver
 	 *            has been initialized
 	 */
-	static const char* GetCurrentVideoDriver() { return SDL_GetCurrentVideoDriver(); }
+    inline const char* GetCurrentVideoDriver() { return SDL_GetCurrentVideoDriver(); }
 
 	struct Display {
 		//  The structure that defines a display mode
@@ -148,7 +148,7 @@ namespace SDL {
 		 *
 		 *  \return   The name of a display, or NULL for an invalid display index.
 		 */
-		const char* GetName() { return SDL_GetDisplayName(index); }
+        const char* GetName() const { return SDL_GetDisplayName(index); }
 
 		/**
 		 *  \brief    Get the desktop area represented by a display, with the primary
@@ -156,7 +156,7 @@ namespace SDL {
 		 *
 		 *  \return   0 on success, or -1 if the index is out of range.
 		 */
-		int GetBounds(Rect& rect) { return SDL_GetDisplayBounds(index, &rect.rect); }
+        int GetBounds(Rect& rect) const { return SDL_GetDisplayBounds(index, &rect.rect); }
 
 		/**
 		 *  \brief    Get the usable desktop area represented by a display, with the
@@ -172,7 +172,7 @@ namespace SDL {
 		 *
 		 *  \return   0 on success, or -1 if the index is out of range.
 		 */
-		int GetUsableBounds(Rect& rect) { return SDL_GetDisplayUsableBounds(index, &rect.rect); }
+        int GetUsableBounds(Rect& rect) const { return SDL_GetDisplayUsableBounds(index, &rect.rect); }
 
 		/**
 		 *  \brief    Get the dots/pixels-per-inch for a display
@@ -182,17 +182,17 @@ namespace SDL {
 		 *
 		 *  \return   0 on success, or -1 if no DPI information is available or the index is out of range.
 		 */
-		int GetDPI(float* ddpi, float* hdpi, float* vdpi) { return SDL_GetDisplayDPI(index, ddpi, hdpi, vdpi); }
+        int GetDPI(float* ddpi, float* hdpi, float* vdpi) const { return SDL_GetDisplayDPI(index, ddpi, hdpi, vdpi); }
 
 		/**
 		 *  \brief    Get the orientation of a display
 		 *
 		 *  \return   The orientation of the display, or UNKNOWN if it isn't available.
 		 */
-		Orientation GetOrientation() { return (Orientation)SDL_GetDisplayOrientation(index); }
+        Orientation GetOrientation() const { return Orientation(SDL_GetDisplayOrientation(index)); }
 
 		// \brief Returns the number of available display modes.
-		int GetNumModes() { return SDL_GetNumDisplayModes(index); }
+        int GetNumModes() const { return SDL_GetNumDisplayModes(index); }
 
 		/**
 		 *  \brief    Fill in information about a specific display mode.
@@ -203,13 +203,13 @@ namespace SDL {
 		 *            \li height         -> largest to smallest
 		 *            \li refresh rate   -> highest to lowest
 		 */
-		int GetMode(int modeIndex, Mode& mode) { return SDL_GetDisplayMode(index, modeIndex, &mode); }
+        int GetMode(int modeIndex, Mode& mode) const { return SDL_GetDisplayMode(index, modeIndex, &mode); }
 
 		// Fill in information about the desktop display mode.
-		int GetDesktopMode(Mode& mode) { return SDL_GetDesktopDisplayMode(index, &mode); }
+        int GetDesktopMode(Mode& mode) const { return SDL_GetDesktopDisplayMode(index, &mode); }
 
 		// Fill in information about the current display mode.
-		int GetCurrentMode(Mode& mode) { return SDL_GetCurrentDisplayMode(index, &mode); }
+        int GetCurrentMode(Mode& mode) const { return SDL_GetCurrentDisplayMode(index, &mode); }
 
 		/**
 		 *  \brief    Get the closest match to the requested display mode.
@@ -229,14 +229,14 @@ namespace SDL {
 		 *            finally checking the refresh_rate.  If all the available modes are too
 		 *            small, then NULL is returned.
 		 */
-		Mode* GetClosestMode(const Mode& mode, Mode& closest) { return SDL_GetClosestDisplayMode(index, &mode, &closest); }
+        Mode* GetClosestMode(const Mode& mode, Mode& closest) const { return SDL_GetClosestDisplayMode(index, &mode, &closest); }
 	};
 
 	// The type used to identify a window
 	struct Window {
 		SDL_Window* window = NULL;
 		bool freeWindow = false;
-		int error = 0;
+        mutable int error = 0;
 
 		Window(const Window& wnd) : Window(wnd.window, false) {}
 		Window(Window&& wnd) noexcept : Window(wnd.window, wnd.freeWindow) { wnd.window = NULL; wnd.freeWindow = false; }
@@ -307,9 +307,9 @@ namespace SDL {
 		 *  \return   The display index of the display containing the center of the
 		 *            window, or -1 on error.
 		 */
-		Display GetDisplay() { return { SDL_GetWindowDisplayIndex(window) }; }
+        Display GetDisplay() const { return { SDL_GetWindowDisplayIndex(window) }; }
 		// Get the display index associated with this window.
-		Window& GetDisplay(Display& display) { display = { SDL_GetWindowDisplayIndex(window) }; return *this; }
+        Window& GetDisplay(Display& display) { display = GetDisplay(); return *this; }
 
 		/**
 		 *  \brief    Set the display mode used when a fullscreen window is visible.
@@ -327,21 +327,22 @@ namespace SDL {
 		 */
 		Window& SetDefaultDisplayMode() { error = SDL_SetWindowDisplayMode(window, NULL); return *this; }
 
-		// Fill in information about the display mode used when a fullscreen window is visible.
-		Window& GetDisplayMode(Display::Mode& mode) { error = SDL_GetWindowDisplayMode(window, &mode);  return *this; }
+        Display::Mode GetDisplayMode() const { Display::Mode ret; error = SDL_GetWindowDisplayMode(window, &ret);  return ret; }
+        // Fill in information about the display mode used when a fullscreen window is visible.
+        Window& GetDisplayMode(Display::Mode& mode) { mode = GetDisplayMode();  return *this; }
 
 		// Get the pixel format associated with the window.
-		Uint32 GetPixelFormat() { return SDL_GetWindowPixelFormat(window); }
+        Uint32 GetPixelFormat() const { return SDL_GetWindowPixelFormat(window); }
 		// Get the pixel format associated with the window.
 		Window& GetPixelFormat(Uint32& format) { format = SDL_GetWindowPixelFormat(window); return *this; }
 
 		// Get the numeric ID of this window, for logging purposes.
-		Uint32 GetID() { return SDL_GetWindowID(window); }
+        Uint32 GetID() const { return SDL_GetWindowID(window); }
 		// Get the numeric ID of this window, for logging purposes.
 		Window& GetID(Uint32& id) { id = SDL_GetWindowID(window); return *this; }
 
 		// Get this window's flags.
-		Uint32 GetFlags() { return SDL_GetWindowFlags(window); }
+        Uint32 GetFlags() const { return SDL_GetWindowFlags(window); }
 		// Get this window's flags.
 		Window& GetFlags(Uint32& flags) { flags = SDL_GetWindowFlags(window); return *this; }
 
@@ -349,9 +350,9 @@ namespace SDL {
 		Window& SetTitle(const char* title) { SDL_SetWindowTitle(window, title); return *this; }
 
 		// Get the title of this window.
-		const char* GetTitle() { return SDL_GetWindowTitle(window); }
+        const char* GetTitle() const { return SDL_GetWindowTitle(window); }
 		// Get the title of this window.
-		Window& GetTitle(const char* title) { title = SDL_GetWindowTitle(window); return *this; }
+        Window& GetTitle(const char*& title) { title = GetTitle(); return *this; }
 
 		/**
 		 *  \brief    Set the icon for this window.
@@ -379,7 +380,7 @@ namespace SDL {
 		 *
 		 *  \return   The value associated with 'name'
 		 */
-		void* GetData(const char* name) { return SDL_GetWindowData(window, name); }
+        void* GetData(const char* name) const { return SDL_GetWindowData(window, name); }
 		/**
 		 *  \brief    Retrieve the data pointer associated with this window.
 		 *
@@ -404,7 +405,7 @@ namespace SDL {
 		 *
 		 *  \return   The position of the window.
 		 */
-		Point GetPosition() {
+        Point GetPosition() const {
 			Point returnVal;
 			SDL_GetWindowPosition(window, &returnVal.x, &returnVal.y);
 			return returnVal;
@@ -463,7 +464,7 @@ namespace SDL {
 		 *            high-dpi support (e.g. iOS or OS X). Use SDL_GL_GetDrawableSize() or
 		 *            SDL_GetRendererOutputSize() to get the real client area size in pixels.
 		 */
-		Point& GetSize() {
+        Point GetSize() const {
 			Point returnVal;
 			SDL_GetWindowSize(window, &returnVal.w, &returnVal.h);
 			return returnVal;
@@ -526,7 +527,7 @@ namespace SDL {
 		 * 
 		 *  \return   The size of the window
 		 */
-		Point GetMinimumSize() {
+        Point GetMinimumSize() const {
 			Point returnVal;
 			SDL_GetWindowMinimumSize(window, &returnVal.w, &returnVal.h);
 			return returnVal;
@@ -561,7 +562,7 @@ namespace SDL {
 		 * 
 		 *  \return   The window size
 		 */
-		Point GetMaximumSize() {
+        Point GetMaximumSize() const {
 			Point returnVal;
 			SDL_GetWindowMaximumSize(window, &returnVal.w, &returnVal.h);
 			return returnVal;
@@ -636,7 +637,7 @@ namespace SDL {
 		 *
 		 *  \warning  You may not combine this with 3D or the rendering API on this window.
 		 */
-		Surface GetSurface() { return SDL_GetWindowSurface(window); }
+        Surface GetSurface() const { return SDL_GetWindowSurface(window); }
 		/**
 		 *  \brief    Get the SDL surface associated with the window.
 		 *
@@ -689,7 +690,7 @@ namespace SDL {
 		 *
 		 *  \return   This returns true if input is grabbed, and false otherwise.
 		 */
-		bool GetGrab() { return SDL_GetWindowGrab(window) == SDL_TRUE; }
+        bool GetGrab() const { return SDL_GetWindowGrab(window) == SDL_TRUE; }
 		//\brief Get this window's input grab mode.
 		Window& GetGrab(bool& grab) { grab = SDL_GetWindowGrab(window) == SDL_TRUE; return *this; }
 
@@ -705,7 +706,7 @@ namespace SDL {
 		 *
 		 *  \return   The last brightness value passed to SetWindowBrightness()
 		 */
-		float GetBrightness() { return SDL_GetWindowBrightness(window); }
+        float GetBrightness() const { return SDL_GetWindowBrightness(window); }
 		/**
 		 *  \brief    Get the brightness (gamma correction) for this window.
 		 *
@@ -733,7 +734,7 @@ namespace SDL {
 		 *
 		 *  \return   0 on success, or -1 on error (invalid window, etc).
 		 */
-		int GetOpacity(float& opacity) { return SDL_GetWindowOpacity(window, &opacity); }
+        int GetOpacity(float& opacity) const { return SDL_GetWindowOpacity(window, &opacity); }
 
 
 		/**
@@ -775,7 +776,7 @@ namespace SDL {
 		 *
 		 *  \return 0 on success, or -1 if gamma ramps are unsupported.
 		 */
-		int GetGammaRamp(Uint16* red, Uint16* green, Uint16* blue) { return SDL_GetWindowGammaRamp(window, red, green, blue); }
+        int GetGammaRamp(Uint16* red, Uint16* green, Uint16* blue) const { return SDL_GetWindowGammaRamp(window, red, green, blue); }
 
 		/**
 		 *  \brief    Provide a callback that decides if this window region has special properties.
@@ -826,16 +827,18 @@ namespace SDL {
 	 *
 	 *  \return   0 on success, or -1 otherwise.
 	 */
-	static int SetWindowModalFor(Window& modal_window, Window& parent_window) { SDL_SetWindowModalFor(modal_window.window, parent_window.window); }
+    inline int SetWindowModalFor(Window& modal_window, Window& parent_window) {
+        return SDL_SetWindowModalFor(modal_window.window, parent_window.window);
+    }
 
 	// Returns whether the screensaver is currently enabled (default off).
-	static bool IsScreenSaverEnabled() { return SDL_IsScreenSaverEnabled(); }
+    inline bool IsScreenSaverEnabled() { return SDL_IsScreenSaverEnabled(); }
 
 	// Allow the screen to be blanked by a screensaver
-	static void EnableScreenSaver() { SDL_EnableScreenSaver(); }
+    inline void EnableScreenSaver() { SDL_EnableScreenSaver(); }
 
 	// Prevent the screen from being blanked by a screensaver
-	static void DisableScreenSaver() { SDL_DisableScreenSaver(); };
+    inline void DisableScreenSaver() { SDL_DisableScreenSaver(); };
 
 	// OpenGL support functions
 	namespace GL {
@@ -883,7 +886,7 @@ namespace SDL {
 		 *  \note     If you do this, you need to retrieve all of the GL functions used in
 		 *            your program from the dynamic library using GetProcAddress().
 		 */
-		static int LoadDefaultLibrary() { return SDL_GL_LoadLibrary(NULL); }
+        inline int LoadDefaultLibrary() { return SDL_GL_LoadLibrary(NULL); }
 
 		 /**
 		  *  \brief    Dynamically load an OpenGL library.
@@ -899,19 +902,19 @@ namespace SDL {
 		  *  \note     If you do this, you need to retrieve all of the GL functions used in
 		  *            your program from the dynamic library using SDL_GL_GetProcAddress().
 		  */
-		static int LoadLibrary(const char* path) { return SDL_GL_LoadLibrary(path); }
+        inline int LoadLibrary(const char* path) { return SDL_GL_LoadLibrary(path); }
 
 		// Get the address of an OpenGL function.
-		static void* GetProcAddress(const char* proc) { return SDL_GL_GetProcAddress(proc); }
+        inline void* GetProcAddress(const char* proc) { return SDL_GL_GetProcAddress(proc); }
 
 		// Unload the OpenGL library previously loaded by SDL_GL_LoadLibrary().
-		static void UnloadLibrary() { SDL_GL_UnloadLibrary(); }
+        inline void UnloadLibrary() { SDL_GL_UnloadLibrary(); }
 
 		// Return true if an OpenGL extension is supported for the current context.
-		static bool ExtensionSupported(const char* extension) { return SDL_GL_ExtensionSupported(extension);}
+        inline bool ExtensionSupported(const char* extension) { return SDL_GL_ExtensionSupported(extension);}
 
 		// Reset all previously set OpenGL context attributes to their default values
-		static void ResetAttributes() { SDL_GL_ResetAttributes(); }
+        inline void ResetAttributes() { SDL_GL_ResetAttributes(); }
 
 		struct GLContext {
 			enum class Profile
@@ -943,12 +946,12 @@ namespace SDL {
 			bool freeContext;
 
 			// Create an OpenGL context for use with an OpenGL window, and make it current.
-			GLContext(Window& window) : GLContext(SDL_GL_CreateContext(window.window), true) {}
+            explicit GLContext(const Window& window) : GLContext(SDL_GL_CreateContext(window.window), true) {}
 
-			GLContext(SDL_GLContext context = NULL, bool freeContext = false) : context(context), freeContext(freeContext) {}
+            GLContext(SDL_GLContext context = nullptr, bool freeContext = false) : context(context), freeContext(freeContext) {}
 
 			// Delete an OpenGL context.
-			~GLContext() { if(freeContext) SDL_GL_DeleteContext(context); }
+            ~GLContext() { if (freeContext && context) SDL_GL_DeleteContext(context); }
 
 			/**
 			 *  \brief    Set up an OpenGL context for rendering into an OpenGL window.
@@ -992,7 +995,7 @@ namespace SDL {
 		 *            platform with high-DPI support (Apple calls this "Retina"), and not disabled
 		 *            by the SDL_HINT_VIDEO_HIGHDPI_DISABLED hint.
 		 */
-		static Point GetDrawableSize(Window& window) {
+        inline Point GetDrawableSize(const Window& window) {
 			Point returnVal;
 			SDL_GL_GetDrawableSize(window.window, &returnVal.w, &returnVal.h);
 			return returnVal;
@@ -1009,7 +1012,7 @@ namespace SDL {
 		 *            platform with high-DPI support (Apple calls this "Retina"), and not disabled
 		 *            by the SDL_HINT_VIDEO_HIGHDPI_DISABLED hint.
 		 */
-		static void GetDrawableSize(Window& window, Point& size) { SDL_GL_GetDrawableSize(window.window, &size.w, &size.h); }
+        inline void GetDrawableSize(const Window& window, Point& size) { SDL_GL_GetDrawableSize(window.window, &size.w, &size.h); }
 		/**
 		 *  \brief    Get the size of a window's underlying drawable in pixels (for use
 		 *            with glViewport).
@@ -1023,7 +1026,7 @@ namespace SDL {
 		 *            platform with high-DPI support (Apple calls this "Retina"), and not disabled
 		 *            by the SDL_HINT_VIDEO_HIGHDPI_DISABLED hint.
 		 */
-		static void GetDrawableSize(Window& window, int* w, int* h) { SDL_GL_GetDrawableSize(window.window, w, h); }
+        inline void GetDrawableSize(const Window& window, int* w, int* h) { SDL_GL_GetDrawableSize(window.window, w, h); }
 
 		/**
 		 *  \brief    Set the swap interval for the current OpenGL context.
@@ -1035,7 +1038,7 @@ namespace SDL {
 		 *
 		 *  \return   0 on success, or -1 if setting the swap interval is not supported.
 		 */
-		static int SetSwapInterval(int interval) { return SDL_GL_SetSwapInterval(interval); }
+        inline int SetSwapInterval(int interval) { return SDL_GL_SetSwapInterval(interval); }
 
 		/**
 		 *  \brief    Get the swap interval for the current OpenGL context.
@@ -1046,9 +1049,9 @@ namespace SDL {
 		 *            If the system can't determine the swap interval, or there isn't a
 		 *            valid current context, this will return 0 as a safe default.
 		 */
-		static int GetSwapInterval() { return SDL_GL_GetSwapInterval(); };
+        inline int GetSwapInterval() { return SDL_GL_GetSwapInterval(); };
 
 		// Swap the OpenGL buffers for a window, if double-buffering is supported.
-		static void SwapWindow(Window& window) { SDL_GL_SwapWindow(window.window); }
-	}
-}
+        inline void SwapWindow(const Window& window) { SDL_GL_SwapWindow(window.window); }
+    } // namespace GL
+} // namespace SDL

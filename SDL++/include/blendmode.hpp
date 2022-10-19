@@ -52,7 +52,7 @@ namespace SDL {
 	 *  and
 	 *      dstA = dstA * dstAlphaFactor alphaOperation srcA * srcAlphaFactor
 	 */
-	static BlendMode ComposeCustomBlendMode(
+    BlendMode ComposeCustomBlendMode(
 		BlendFactor srcColourFactor,
 		BlendFactor dstColourFactor,
 		BlendOperation colourOperation,

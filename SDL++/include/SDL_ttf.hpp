@@ -91,8 +91,8 @@ namespace SDL::TTF {
 
         // Get the font face attributes, if any
         int FontFaceIsFixedWidth();
-        char* FontFaceFamilyName();
-        char* FontFaceStyleName();
+        const char* FontFaceFamilyName();
+        const char* FontFaceStyleName();
 
         // Check wether a glyph is provided by the font or not
         bool GlyphIsProvided(Uint16 ch);

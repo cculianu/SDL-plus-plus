@@ -23,7 +23,7 @@ Renderer& Renderer::FlushError() { error = 0; return *this; }
 Renderer& Renderer::SetScale(const FPoint& scale) { error |= SDL_RenderSetScale(renderer, scale.x, scale.y); return *this; }
 Renderer& Renderer::SetScale(float scaleX, float scaleY) { error |= SDL_RenderSetScale(renderer, scaleX, scaleY); return *this; }
 
-FPoint Renderer::GetScale() {
+FPoint Renderer::GetScale() const {
 	FPoint returnVal;
 	SDL_RenderGetScale(renderer, &returnVal.x, &returnVal.y);
 	return returnVal;
@@ -192,7 +192,7 @@ Renderer& Renderer::GetDriverInfo(int index, Info& info) { error |= SDL_GetRende
 
 Renderer& Renderer::GetInfo(Info& info) { error |= SDL_GetRendererInfo(renderer, &info); return *this; }
 
-Point Renderer::GetOutputSize() {
+Point Renderer::GetOutputSize() const {
 	Point returnVal;
 	error |= SDL_GetRendererOutputSize(renderer, &returnVal.w, &returnVal.h);
 	return returnVal;
@@ -200,21 +200,20 @@ Point Renderer::GetOutputSize() {
 Renderer& Renderer::GetOutputSize(Point& size) { error |= SDL_GetRendererOutputSize(renderer, &size.w, &size.h); return *this; }
 Renderer& Renderer::GetOutputSize(int& w, int& h) { error |= SDL_GetRendererOutputSize(renderer, &w, &h); return *this; }
 
-bool Renderer::TargetSupported() { return SDL_RenderTargetSupported(renderer); }
+bool Renderer::TargetSupported() const { return SDL_RenderTargetSupported(renderer); }
 Renderer& Renderer::TargetSupported(bool& support) { support = SDL_RenderTargetSupported(renderer); return *this; }
 
 Renderer& Renderer::SetTarget(Texture& texture) { error |= SDL_SetRenderTarget(renderer, texture.texture); return *this; }
-Texture Renderer::GetTarget() { return Texture(SDL_GetRenderTarget(renderer), false); }
+Texture Renderer::GetTarget() const { return Texture(SDL_GetRenderTarget(renderer), false); }
 Renderer& Renderer::GetTarget(Texture& target) {
-	target.~Texture();
-	target.texture = SDL_GetRenderTarget(renderer);
+    target = Texture(SDL_GetRenderTarget(renderer));
 	return *this;
 }
 
 Renderer& Renderer::SetLogicalSize(const Point& size) { error |= SDL_RenderSetLogicalSize(renderer, size.w, size.h); return *this; }
 Renderer& Renderer::SetLogicalSize(int w, int h) { error |= SDL_RenderSetLogicalSize(renderer, w, h); return *this; }
 
-Point Renderer::GetLogicalSize() {
+Point Renderer::GetLogicalSize() const {
 	Point returnVal;
 	SDL_RenderGetLogicalSize(renderer, &returnVal.w, &returnVal.h);
 	return returnVal;
@@ -222,14 +221,14 @@ Point Renderer::GetLogicalSize() {
 Renderer& Renderer::GetLogicalSize(Point& size) { SDL_RenderGetLogicalSize(renderer, &size.w, &size.h); return *this; }
 Renderer& Renderer::GetLogicalSize(int& w, int& h) { SDL_RenderGetLogicalSize(renderer, &w, &h); return *this; }
 
-Renderer& Renderer::SetIntegerScale(bool enable) { error |= SDL_RenderSetIntegerScale(renderer, (SDL_bool)enable); return *this; }
-bool Renderer::GetIntegerScale() { return SDL_RenderGetIntegerScale(renderer); }
+Renderer& Renderer::SetIntegerScale(bool enable) { error |= SDL_RenderSetIntegerScale(renderer, SDL_bool(enable)); return *this; }
+bool Renderer::GetIntegerScale() const { return SDL_RenderGetIntegerScale(renderer) == SDL_bool::SDL_TRUE; }
 Renderer& Renderer::GetIntegerScale(bool& enabled) { enabled = SDL_RenderGetIntegerScale(renderer); return *this; }
 
 Renderer& Renderer::SetViewport(const Rect& rect) { error |= SDL_RenderSetViewport(renderer, &rect.rect); return *this; }
 Renderer& Renderer::FillViewport() { error |= SDL_RenderSetViewport(renderer, NULL); return *this; }
 
-Rect Renderer::GetViewport() {
+Rect Renderer::GetViewport() const {
 	Rect returnVal;
 	SDL_RenderGetViewport(renderer, &returnVal.rect);
 	return returnVal;
@@ -239,36 +238,45 @@ Renderer& Renderer::GetViewport(Rect& rect) { SDL_RenderGetViewport(renderer, &r
 Renderer& Renderer::SetClipRect(const Rect& rect) { error |= SDL_RenderSetClipRect(renderer, &rect.rect); return *this; }
 Renderer& Renderer::DisableClip() { error |= SDL_RenderSetClipRect(renderer, NULL); return *this; }
 
-Rect Renderer::GetClipRect() {
+Rect Renderer::GetClipRect() const {
 	Rect returnVal;
 	SDL_RenderGetClipRect(renderer, &returnVal.rect);
 	return returnVal;
 }
 Renderer& Renderer::GetClipRect(Rect& rect) { SDL_RenderGetClipRect(renderer, &rect.rect); return *this; }
 
-bool Renderer::IsClipEnabled() { return SDL_RenderIsClipEnabled(renderer); }
-Renderer& Renderer::IsClipEnabled(bool& enabled) { error |= SDL_RenderIsClipEnabled(renderer); return *this; }
+bool Renderer::IsClipEnabled() const { return SDL_RenderIsClipEnabled(renderer); }
+Renderer& Renderer::IsClipEnabled(bool& enabled) { enabled = SDL_RenderIsClipEnabled(renderer) == SDL_bool::SDL_TRUE; return *this; }
 
 Renderer& Renderer::ReadPixelsRect(const Rect& rect, void* pixels, int pitch, Uint32 format) { error |= SDL_RenderReadPixels(renderer, &rect.rect, format, pixels, pitch); return *this; }
 Renderer& Renderer::ReadPixels(void* pixels, int pitch, Uint32 format) { error |= SDL_RenderReadPixels(renderer, NULL, format, pixels, pitch); return *this; }
 
-void* Renderer::GetMetalLayer() { return SDL_RenderGetMetalLayer(renderer); }
-void* Renderer::GetMetalCommandEncoder() { return SDL_RenderGetMetalCommandEncoder(renderer); }
+void* Renderer::GetMetalLayer() const { return SDL_RenderGetMetalLayer(renderer); }
+void* Renderer::GetMetalCommandEncoder() const { return SDL_RenderGetMetalCommandEncoder(renderer); }
 
-Texture::Texture() : Texture(NULL, false) {}
 Texture::Texture(Texture& txt) : Texture(txt.texture, false) {}
 Texture::Texture(Texture&& txt) noexcept : Texture(txt.texture, txt.freeTexture) { txt.freeTexture = false; }
-Texture& Texture::operator=(Texture that) {
-	texture = that.texture;
-	freeTexture = false;
+Texture& Texture::operator=(Texture&& that) {
+    if (this != &that) {
+        std::swap(texture, that.texture);
+        std::swap(freeTexture, that.freeTexture);
+    }
 	return *this;
 }
 
-Texture::Texture(SDL_Texture* texture, bool free) : texture(texture), freeTexture(free && texture != NULL) {}
+Texture& Texture::operator=(const Texture& that) {
+    if (this != &that) {
+        texture = that.texture;
+        freeTexture = false;
+    }
+    return *this;
+}
+
+Texture::Texture(SDL_Texture* texture, bool free) noexcept : texture(texture), freeTexture(free && texture != nullptr) {}
 Texture::Texture(Renderer& renderer, const Point& size, Access access, Uint32 format) : Texture(SDL_CreateTexture(renderer.renderer, format, (SDL_TextureAccess)access, size.x, size.y)) {}
 Texture::Texture(Renderer& renderer, Surface& surface) : Texture(SDL_CreateTextureFromSurface(renderer.renderer, surface.surface)) {}
 
-Texture::~Texture() { if (freeTexture) SDL_DestroyTexture(texture); }
+Texture::~Texture() { if (freeTexture && texture) SDL_DestroyTexture(texture); }
 
 int Texture::LockRect(const Rect& rect, void*& pixels, int& pitch) { return SDL_LockTexture(texture, (const SDL_Rect*)&rect.rect, &pixels, &pitch); }
 int Texture::Lock(void*& pixels, int& pitch) { return SDL_LockTexture(texture, NULL, &pixels, &pitch); }

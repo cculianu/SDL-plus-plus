@@ -112,7 +112,7 @@ namespace SDL {
 		int SaveBMP_RW(SDL_RWops* dst, bool freedst) { return SDL_SaveBMP_RW(surface, dst, freedst); }
 
 		// Save a surface to a file.
-		int SaveBMP(const char* file) { SDL_SaveBMP_RW(surface, SDL_RWFromFile(file, "wb"), true); }
+        int SaveBMP(const char* file) { return SDL_SaveBMP_RW(surface, SDL_RWFromFile(file, "wb"), true); }
 
 		/**
 		 *  \brief    Sets the RLE acceleration hint for a surface.
@@ -230,10 +230,10 @@ namespace SDL {
 		 *            function returns true and blits to the surface will be clipped to
 		 *            the intersection of the surface area and the clipping rectangle.
 		 */
-		bool SetClipRect(const Rect& rect) { SDL_SetClipRect(surface, &rect.rect); }
+        bool SetClipRect(const Rect& rect) { return SDL_SetClipRect(surface, &rect.rect) == SDL_bool::SDL_TRUE; }
 
 		// Disables the clipping rectangle for the destination surface in a blit.
-		bool DisableClip() { SDL_SetClipRect(surface, NULL); }
+        bool DisableClip() { return SDL_SetClipRect(surface, NULL) == SDL_bool::SDL_TRUE; }
 
 		// Gets the clipping rectangle for the destination surface in a blit.
 		Rect GetClipRect() {
@@ -410,7 +410,8 @@ namespace SDL {
 	 *
 	 *  \return   0 on success, or -1 if there was an error
 	 */
-	static int ConvertPixels(const Rect& size, Uint32 src_format, const void* src, int src_pitch, Uint32 dst_format, void* dst, int dst_pitch) {
+    inline int ConvertPixels(const Rect& size, Uint32 src_format, const void* src, int src_pitch, Uint32 dst_format,
+                             void* dst, int dst_pitch) {
 		return SDL_ConvertPixels(size.w, size.h, src_format, src, src_pitch, dst_format, dst, dst_pitch);
 	}
 
@@ -425,18 +426,18 @@ namespace SDL {
 		};
 
 		// Set the YUV conversion mode
-		static void SetConversionMode(Conversion mode) {
-			SDL_SetYUVConversionMode((SDL_YUV_CONVERSION_MODE)mode);
+        inline void SetConversionMode(Conversion mode) {
+            SDL_SetYUVConversionMode(SDL_YUV_CONVERSION_MODE(mode));
 		}
 
 		// Get the YUV conversion mode
-		static Conversion GetConversionMode() {
-			return (Conversion)SDL_GetYUVConversionMode();
+        inline Conversion GetConversionMode() {
+            return Conversion(SDL_GetYUVConversionMode());
 		}
 
 		// Get the YUV conversion mode, returning the correct mode for the resolution when the current conversion mode is SDL::YUV::Conversion:AUTOMATIC
-		static Conversion GetConversionModeForResolution(const Point& size) {
-			return (Conversion)SDL_GetYUVConversionModeForResolution(size.w, size.h);
+        inline Conversion GetConversionModeForResolution(const Point& size) {
+            return Conversion(SDL_GetYUVConversionModeForResolution(size.w, size.h));
 		}
 	}
 }

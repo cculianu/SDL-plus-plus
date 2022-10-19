@@ -8,7 +8,6 @@ using namespace SDL;
 #pragma region FPoint
 FPoint::FPoint() : x(0), y(0) {}
 FPoint::FPoint(float x, float y) : x(x), y(y) {}
-FPoint::FPoint(const FPoint& v) : point(v.point) {}
 FPoint::FPoint(const SDL_FPoint& point) : point(point) {}
 
 FPoint FPoint::FromAngle(float angle, float mag) { return { cosf(angle) * mag, sinf(angle) * mag }; }
@@ -100,7 +99,6 @@ std::ostream& SDL::operator<<(std::ostream& os, const FPoint& v) { return os << 
 #pragma region Point
 Point::Point() : x(0), y(0) {}
 Point::Point(int x, int y) : x(x), y(y) {}
-Point::Point(const Point& v) : point(v.point) {}
 Point::Point(const SDL_Point& point) : point(point) {}
 
 Point::operator FPoint() const { return { float(x), float(y) }; }
@@ -190,7 +188,6 @@ FRect::FRect(float x, float y, float w, float h) : x(x), y(y), w(w), h(h) {}
 FRect::FRect(float x, float y, const FPoint& size) : x(x), y(y), size(size) {}
 FRect::FRect(const FPoint& pos, float w, float h) : pos(pos), w(w), h(h) {}
 FRect::FRect(const FPoint& pos, const FPoint& size) : pos(pos), size(size) {}
-FRect::FRect(const FRect& rect) : rect(rect.rect) {}
 FRect::FRect(const SDL_FRect& rect) : rect(rect) {}
 
 FRect::operator std::string() const { return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(w) + ", " + std::to_string(h) + ")"; }

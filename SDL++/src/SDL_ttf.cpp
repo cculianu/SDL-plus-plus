@@ -1,4 +1,4 @@
-#include<SDL_ttf.hpp>
+#include <SDL_ttf.hpp>
 
 namespace SDL::TTF {
     const Version* Linked_Version() { return (Version*)TTF_Linked_Version(); }

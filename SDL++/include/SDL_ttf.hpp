@@ -1,7 +1,7 @@
 #include <SDL_ttf.h>
 #include "rect.hpp"
+#include "surface.hpp"
 #include "version.hpp"
-#include "video.hpp"
 
 namespace SDL::TTF {
     /** This function gets the version of the dynamically linked SDL_ttf library.

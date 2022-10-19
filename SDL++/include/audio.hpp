@@ -64,14 +64,14 @@ namespace SDL {
         S16LSB = AUDIO_S16LSB, // Signed 16-bit samples
         U16MSB = AUDIO_U16MSB, // As above, but big-endian byte order
         S16MSB = AUDIO_S16MSB, // As above, but big-endian byte order
-        U16    = AUDIO_U16,   
-        S16    = AUDIO_S16,   
+        U16    = AUDIO_U16,
+        S16    = AUDIO_S16,
         S32LSB = AUDIO_S32LSB, // 32-bit integer samples
         S32MSB = AUDIO_S32MSB, // As above, but big-endian byte order
-        S32    = AUDIO_S32,      
+        S32    = AUDIO_S32,
         F32LSB = AUDIO_F32LSB, // 32-bit floating point samples
         F32MSB = AUDIO_F32MSB, // As above, but big-endian byte order
-        F32    = AUDIO_F32,   
+        F32    = AUDIO_F32,
         U16SYS = AUDIO_U16SYS,
         S16SYS = AUDIO_S16SYS,
         S32SYS = AUDIO_S32SYS,
@@ -508,7 +508,7 @@ namespace SDL {
          *
          *  Supported are RIFF WAVE files with the formats PCM (8, 16, 24, and 32 bits),
          *  IEEE Float (32 bits), Microsoft ADPCM and IMA ADPCM (4 bits), and A-law and
-         *  µ-law (8 bits). Other formats are currently unsupported and cause an error.
+         *  Âµ-law (8 bits). Other formats are currently unsupported and cause an error.
          *
          *  If this function succeeds, the pointer returned by it is equal to \c spec
          *  and the pointer to the audio data allocated by the function is written to

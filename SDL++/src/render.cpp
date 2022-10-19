@@ -6,9 +6,9 @@ Renderer::Renderer(const Renderer& r) : renderer(r.renderer) { }
 Renderer::Renderer(Renderer&& r) noexcept : renderer(r.renderer), freeRenderer(r.freeRenderer) { r.freeRenderer = false; }
 Renderer& Renderer::operator=(Renderer that)
 {
-	std::swap(renderer, that.renderer);
-	std::swap(freeRenderer, that.freeRenderer);
-	return *this;
+    std::swap(renderer, that.renderer);
+    std::swap(freeRenderer, that.freeRenderer);
+    return *this;
 }
 
 Renderer::Renderer(SDL_Renderer* renderer, bool free) : renderer(renderer), freeRenderer(free && renderer != NULL) {}
@@ -24,9 +24,9 @@ Renderer& Renderer::SetScale(const FPoint& scale) { error |= SDL_RenderSetScale(
 Renderer& Renderer::SetScale(float scaleX, float scaleY) { error |= SDL_RenderSetScale(renderer, scaleX, scaleY); return *this; }
 
 FPoint Renderer::GetScale() const {
-	FPoint returnVal;
-	SDL_RenderGetScale(renderer, &returnVal.x, &returnVal.y);
-	return returnVal;
+    FPoint returnVal;
+    SDL_RenderGetScale(renderer, &returnVal.x, &returnVal.y);
+    return returnVal;
 }
 Renderer& Renderer::GetScale(FPoint& scale) { SDL_RenderGetScale(renderer, &scale.x, &scale.y); return *this; }
 Renderer& Renderer::GetScale(float& scaleX, float& scaleY) { SDL_RenderGetScale(renderer, &scaleX, &scaleY); return *this; }
@@ -65,79 +65,79 @@ Renderer& Renderer::DrawRectF(const FRect& rect) { error |= SDL_RenderDrawRectF(
 Renderer& Renderer::DrawRectF(const FRect* rect) { error |= SDL_RenderDrawRectF(renderer, (const SDL_FRect*)rect); return *this; }
 Renderer& Renderer::DrawRectEx(const Rect& rect, const Point& center, double angle)
 {
-	FPoint corners[5];
-	float rotX = cos(angle);
-	float rotY = sin(angle);
+    FPoint corners[5];
+    float rotX = cos(angle);
+    float rotY = sin(angle);
 
-	int left = rect.x;
-	int top = rect.y;
-	int right = left + rect.w;
-	int bottom = top + rect.h;
+    int left = rect.x;
+    int top = rect.y;
+    int right = left + rect.w;
+    int bottom = top + rect.h;
 
-	corners[0] = Point(left,  top)   .rotateAround(center, rotX, rotY);
-	corners[1] = Point(right, top)   .rotateAround(center, rotX, rotY);
-	corners[2] = Point(right, bottom).rotateAround(center, rotX, rotY);
-	corners[3] = Point(left,  bottom).rotateAround(center, rotX, rotY);
-	corners[4] = corners[0];
+    corners[0] = Point(left,  top)   .rotateAround(center, rotX, rotY);
+    corners[1] = Point(right, top)   .rotateAround(center, rotX, rotY);
+    corners[2] = Point(right, bottom).rotateAround(center, rotX, rotY);
+    corners[3] = Point(left,  bottom).rotateAround(center, rotX, rotY);
+    corners[4] = corners[0];
 
-	DrawLinesF(corners, 5);
+    DrawLinesF(corners, 5);
 
-	return *this;
+    return *this;
 }
 Renderer& Renderer::DrawRectEx(const Rect& rect, double angle)
 {
-	FPoint corners[5];
+    FPoint corners[5];
 
-	FPoint center = { rect.x + rect.w / 2.0f, rect.y + rect.h / 2.0f };
-	FPoint corner1 = FPoint( -rect.w / 2.0, -rect.h / 2.0 ).rotate(angle);
+    FPoint center = { rect.x + rect.w / 2.0f, rect.y + rect.h / 2.0f };
+    FPoint corner1 = FPoint( -rect.w / 2.0, -rect.h / 2.0 ).rotate(angle);
 
-	corners[0] = corner1 + center;
-	corners[1] = FPoint(corner1.y, -corner1.x) + center;
-	corners[2] = FPoint(-corner1.x, -corner1.y) + center;
-	corners[3] = FPoint(-corner1.y, corner1.x) + center;
-	corners[4] = corners[0];
+    corners[0] = corner1 + center;
+    corners[1] = FPoint(corner1.y, -corner1.x) + center;
+    corners[2] = FPoint(-corner1.x, -corner1.y) + center;
+    corners[3] = FPoint(-corner1.y, corner1.x) + center;
+    corners[4] = corners[0];
 
-	DrawLinesF(corners, 5);
+    DrawLinesF(corners, 5);
 
-	return *this;
+    return *this;
 }
 Renderer& Renderer::DrawRectExF(const FRect& rect, const FPoint& center, double angle)
 {
-	FPoint corners[5];
-	float rotX = cos(angle);
-	float rotY = sin(angle);
+    FPoint corners[5];
+    float rotX = cos(angle);
+    float rotY = sin(angle);
 
-	float left = rect.x;
-	float top = rect.y;
-	float right = left + rect.w;
-	float bottom = top + rect.h;
+    float left = rect.x;
+    float top = rect.y;
+    float right = left + rect.w;
+    float bottom = top + rect.h;
 
-	corners[0] = FPoint(left, top).rotateAround(center, rotX, rotY);
-	corners[1] = FPoint(right, top).rotateAround(center, rotX, rotY);
-	corners[2] = FPoint(right, bottom).rotateAround(center, rotX, rotY);
-	corners[3] = FPoint(left, bottom).rotateAround(center, rotX, rotY);
-	corners[4] = corners[0];
+    corners[0] = FPoint(left, top).rotateAround(center, rotX, rotY);
+    corners[1] = FPoint(right, top).rotateAround(center, rotX, rotY);
+    corners[2] = FPoint(right, bottom).rotateAround(center, rotX, rotY);
+    corners[3] = FPoint(left, bottom).rotateAround(center, rotX, rotY);
+    corners[4] = corners[0];
 
-	DrawLinesF(corners, 5);
+    DrawLinesF(corners, 5);
 
-	return *this;
+    return *this;
 }
 Renderer& Renderer::DrawRectExF(const FRect& rect, double angle)
 {
-	FPoint corners[5];
+    FPoint corners[5];
 
-	FPoint center = { rect.x + rect.w / 2.0f, rect.y + rect.h / 2.0f };
-	FPoint corner1 = FPoint(-rect.w / 2.0, -rect.h / 2.0).rotate(angle);
+    FPoint center = { rect.x + rect.w / 2.0f, rect.y + rect.h / 2.0f };
+    FPoint corner1 = FPoint(-rect.w / 2.0, -rect.h / 2.0).rotate(angle);
 
-	corners[0] = corner1 + center;
-	corners[1] = FPoint(corner1.y, -corner1.x) + center;
-	corners[2] = FPoint(-corner1.x, -corner1.y) + center;
-	corners[3] = FPoint(-corner1.y, corner1.x) + center;
-	corners[4] = corners[0];
+    corners[0] = corner1 + center;
+    corners[1] = FPoint(corner1.y, -corner1.x) + center;
+    corners[2] = FPoint(-corner1.x, -corner1.y) + center;
+    corners[3] = FPoint(-corner1.y, corner1.x) + center;
+    corners[4] = corners[0];
 
-	DrawLinesF(corners, 5);
+    DrawLinesF(corners, 5);
 
-	return *this;
+    return *this;
 }
 Renderer& Renderer::DrawRects(const Rect* rects, int count) { error |= SDL_RenderDrawRects(renderer, (const SDL_Rect*)rects, count); return *this; }
 Renderer& Renderer::DrawRectsF(const FRect* rects, int count) { error |= SDL_RenderDrawRectsF(renderer, (const SDL_FRect*)rects, count); return *this; }
@@ -193,9 +193,9 @@ Renderer& Renderer::GetDriverInfo(int index, Info& info) { error |= SDL_GetRende
 Renderer& Renderer::GetInfo(Info& info) { error |= SDL_GetRendererInfo(renderer, &info); return *this; }
 
 Point Renderer::GetOutputSize() const {
-	Point returnVal;
-	error |= SDL_GetRendererOutputSize(renderer, &returnVal.w, &returnVal.h);
-	return returnVal;
+    Point returnVal;
+    error |= SDL_GetRendererOutputSize(renderer, &returnVal.w, &returnVal.h);
+    return returnVal;
 }
 Renderer& Renderer::GetOutputSize(Point& size) { error |= SDL_GetRendererOutputSize(renderer, &size.w, &size.h); return *this; }
 Renderer& Renderer::GetOutputSize(int& w, int& h) { error |= SDL_GetRendererOutputSize(renderer, &w, &h); return *this; }
@@ -207,16 +207,16 @@ Renderer& Renderer::SetTarget(Texture& texture) { error |= SDL_SetRenderTarget(r
 Texture Renderer::GetTarget() const { return Texture(SDL_GetRenderTarget(renderer), false); }
 Renderer& Renderer::GetTarget(Texture& target) {
     target = Texture(SDL_GetRenderTarget(renderer));
-	return *this;
+    return *this;
 }
 
 Renderer& Renderer::SetLogicalSize(const Point& size) { error |= SDL_RenderSetLogicalSize(renderer, size.w, size.h); return *this; }
 Renderer& Renderer::SetLogicalSize(int w, int h) { error |= SDL_RenderSetLogicalSize(renderer, w, h); return *this; }
 
 Point Renderer::GetLogicalSize() const {
-	Point returnVal;
-	SDL_RenderGetLogicalSize(renderer, &returnVal.w, &returnVal.h);
-	return returnVal;
+    Point returnVal;
+    SDL_RenderGetLogicalSize(renderer, &returnVal.w, &returnVal.h);
+    return returnVal;
 }
 Renderer& Renderer::GetLogicalSize(Point& size) { SDL_RenderGetLogicalSize(renderer, &size.w, &size.h); return *this; }
 Renderer& Renderer::GetLogicalSize(int& w, int& h) { SDL_RenderGetLogicalSize(renderer, &w, &h); return *this; }
@@ -229,9 +229,9 @@ Renderer& Renderer::SetViewport(const Rect& rect) { error |= SDL_RenderSetViewpo
 Renderer& Renderer::FillViewport() { error |= SDL_RenderSetViewport(renderer, NULL); return *this; }
 
 Rect Renderer::GetViewport() const {
-	Rect returnVal;
-	SDL_RenderGetViewport(renderer, &returnVal.rect);
-	return returnVal;
+    Rect returnVal;
+    SDL_RenderGetViewport(renderer, &returnVal.rect);
+    return returnVal;
 }
 Renderer& Renderer::GetViewport(Rect& rect) { SDL_RenderGetViewport(renderer, &rect.rect); return *this; }
 
@@ -239,9 +239,9 @@ Renderer& Renderer::SetClipRect(const Rect& rect) { error |= SDL_RenderSetClipRe
 Renderer& Renderer::DisableClip() { error |= SDL_RenderSetClipRect(renderer, NULL); return *this; }
 
 Rect Renderer::GetClipRect() const {
-	Rect returnVal;
-	SDL_RenderGetClipRect(renderer, &returnVal.rect);
-	return returnVal;
+    Rect returnVal;
+    SDL_RenderGetClipRect(renderer, &returnVal.rect);
+    return returnVal;
 }
 Renderer& Renderer::GetClipRect(Rect& rect) { SDL_RenderGetClipRect(renderer, &rect.rect); return *this; }
 
@@ -261,7 +261,7 @@ Texture& Texture::operator=(Texture&& that) {
         std::swap(texture, that.texture);
         std::swap(freeTexture, that.freeTexture);
     }
-	return *this;
+    return *this;
 }
 
 Texture& Texture::operator=(const Texture& that) {
@@ -282,16 +282,16 @@ int Texture::LockRect(const Rect& rect, void*& pixels, int& pitch) { return SDL_
 int Texture::Lock(void*& pixels, int& pitch) { return SDL_LockTexture(texture, NULL, &pixels, &pitch); }
 
 int Texture::LockRectToSurface(const Rect& rect, Surface& surface) {
-	surface.~Surface();
-	int returnVal = SDL_LockTextureToSurface(texture, &rect.rect, &surface.surface);
-	surface.freeSurface = surface.surface != NULL;
-	return returnVal;
+    surface.~Surface();
+    int returnVal = SDL_LockTextureToSurface(texture, &rect.rect, &surface.surface);
+    surface.freeSurface = surface.surface != NULL;
+    return returnVal;
 }
 int Texture::LockToSurface(Surface& surface) {
-	surface.~Surface();
-	int returnVal = SDL_LockTextureToSurface(texture, NULL, &surface.surface);
-	surface.freeSurface = surface.surface != NULL;
-	return returnVal;
+    surface.~Surface();
+    int returnVal = SDL_LockTextureToSurface(texture, NULL, &surface.surface);
+    surface.freeSurface = surface.surface != NULL;
+    return returnVal;
 }
 
 void Texture::Unlock() { SDL_UnlockTexture(texture); }
@@ -301,10 +301,10 @@ int Texture::UpdateRect(const Rect& rect, void* pixels, int pitch) { return SDL_
 int Texture::Update(void* pixels, int pitch) { return SDL_UpdateTexture(texture, NULL, pixels, pitch); }
 
 int Texture::UpdateYUVRect(const Rect& rect, const Uint8* Yplane, int Ypitch, const Uint8* Uplane, int Upitch, const Uint8* Vplane, int Vpitch) {
-	return SDL_UpdateYUVTexture(texture, &rect.rect, Yplane, Ypitch, Uplane, Upitch, Vplane, Vpitch);
+    return SDL_UpdateYUVTexture(texture, &rect.rect, Yplane, Ypitch, Uplane, Upitch, Vplane, Vpitch);
 }
 int Texture::UpdateYUV(const Uint8* Yplane, int Ypitch, const Uint8* Uplane, int Upitch, const Uint8* Vplane, int Vpitch) {
-	return SDL_UpdateYUVTexture(texture, NULL, Yplane, Ypitch, Uplane, Upitch, Vplane, Vpitch);
+    return SDL_UpdateYUVTexture(texture, NULL, Yplane, Ypitch, Uplane, Upitch, Vplane, Vpitch);
 }
 
 int Texture::QueryFormat(Uint32& format) { return SDL_QueryTexture(texture, &format, NULL, NULL, NULL); }
@@ -329,12 +329,12 @@ int Texture::SetScaleMode(ScaleMode scaleMode) { return SDL_SetTextureScaleMode(
 int Texture::GetScaleMode(ScaleMode& scaleMode) { return SDL_GetTextureScaleMode(texture, (SDL_ScaleMode*)&scaleMode); }
 
 int SDL::CreateWindowAndRenderer(const Point& size, Window& window, Renderer& renderer, Uint32 window_flags) {
-	window.~Window();
-	renderer.~Renderer();
-	int returnVal = SDL_CreateWindowAndRenderer(size.w, size.h, window_flags, &window.window, &renderer.renderer);
-	window.freeWindow = window.window != NULL;
-	renderer.freeRenderer = renderer.renderer != NULL;
-	return returnVal;
+    window.~Window();
+    renderer.~Renderer();
+    int returnVal = SDL_CreateWindowAndRenderer(size.w, size.h, window_flags, &window.window, &renderer.renderer);
+    window.freeWindow = window.window != NULL;
+    renderer.freeRenderer = renderer.renderer != NULL;
+    return returnVal;
 }
 
 int GL::BindTexture(Texture& texture, FPoint& texsize) { return SDL_GL_BindTexture(texture.texture, &texsize.w, &texsize.h); }

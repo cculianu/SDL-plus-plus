@@ -3,12 +3,12 @@
 using namespace SDL;
 
 BlendMode ComposeCustomBlendMode(
-	BlendFactor srcColourFactor,
-	BlendFactor dstColourFactor,
-	BlendOperation colourOperation,
-	BlendFactor srcAlphaFactor,
-	BlendFactor dstAlphaFactor,
-	BlendOperation alphaOperation
+    BlendFactor srcColourFactor,
+    BlendFactor dstColourFactor,
+    BlendOperation colourOperation,
+    BlendFactor srcAlphaFactor,
+    BlendFactor dstAlphaFactor,
+    BlendOperation alphaOperation
 ) {
     return BlendMode(SDL_ComposeCustomBlendMode(
         SDL_BlendFactor(srcColourFactor),

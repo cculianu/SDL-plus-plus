@@ -10,9 +10,9 @@ Uint16 Version::AsNum() const { return SDL_VERSIONNUM(major, minor, patch); }
 bool Version::Atleast() const { return SDL_VERSION_ATLEAST(major, minor, patch); }
 
 Version GetVersion() {
-	Version ver;
-	SDL_GetVersion(&ver);
-	return ver;
+    Version ver;
+    SDL_GetVersion(&ver);
+    return ver;
 }
 
 const char* GetRevision() { return SDL_GetRevision(); }

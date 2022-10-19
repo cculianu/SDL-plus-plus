@@ -222,22 +222,22 @@ bool FRect::intersectsRect(const  Rect& r) const { return x < r.x + r.w && y < r
 bool FRect::intersectsRect(const FRect& r) const { return x < r.x + r.w && y < r.y + r.h && x + w > r.x && y + h > r.y; }
 
 bool FRect::intersectRect(const Rect& rect, FRect& result) const {
-	if (!intersectsRect(rect)) return false;
+    if (!intersectsRect(rect)) return false;
 
-	FPoint topLeft = FPoint::max(this->topLeft(), (FPoint)rect.topLeft());
-	FPoint bottomRight = FPoint::min(this->bottomRight(), (FPoint)rect.bottomRight());
-	result = { topLeft, bottomRight - topLeft };
+    FPoint topLeft = FPoint::max(this->topLeft(), (FPoint)rect.topLeft());
+    FPoint bottomRight = FPoint::min(this->bottomRight(), (FPoint)rect.bottomRight());
+    result = { topLeft, bottomRight - topLeft };
 
-	return true;
+    return true;
 }
 bool FRect::intersectRect(const FRect& rect, FRect& result) const {
-	if (!intersectsRect(rect)) return false;
+    if (!intersectsRect(rect)) return false;
 
-	FPoint topLeft = FPoint::max(this->topLeft(), rect.topLeft());
-	FPoint bottomRight = FPoint::min(this->bottomRight(), rect.bottomRight());
-	result = { topLeft, bottomRight - topLeft };
+    FPoint topLeft = FPoint::max(this->topLeft(), rect.topLeft());
+    FPoint bottomRight = FPoint::min(this->bottomRight(), rect.bottomRight());
+    result = { topLeft, bottomRight - topLeft };
 
-	return true;
+    return true;
 }
 
 #pragma region FRect arithmetic
@@ -312,15 +312,15 @@ FPoint Rect::percent(const FPoint& p) const { return pos + size * p; }
 
 template <typename iterator>
 bool Rect::enclosePoints(iterator begin, iterator end, const Rect& clip) {
-	std::vector<SDL_Point> points;
-	points.insert(points.begin(), begin, end);
-	return SDL_EnclosePoints(points.data(), points.size(), &clip.rect, &rect);
+    std::vector<SDL_Point> points;
+    points.insert(points.begin(), begin, end);
+    return SDL_EnclosePoints(points.data(), points.size(), &clip.rect, &rect);
 }
 template <typename iterator>
 bool Rect::enclosePoints(iterator begin, iterator end) {
-	std::vector<SDL_Point> points;
-	points.insert(points.begin(), begin, end);
-	return SDL_EnclosePoints(points.data(), points.size(), NULL, &rect);
+    std::vector<SDL_Point> points;
+    points.insert(points.begin(), begin, end);
+    return SDL_EnclosePoints(points.data(), points.size(), NULL, &rect);
 }
 
 Rect   Rect::transform(const Rect& target) const { return { (target.x - x) * w, (target.y - y) * h, target.w * w, target.h * h }; }
@@ -334,28 +334,28 @@ bool Rect::contains(const FPoint& v) const { return v.x > x && v.y > y && v.x < 
 bool Rect::intersectsRect(const Rect& r) const { return x < r.x + r.w && y < r.y + r.h && x + w > r.x && y + h > r.y; }
 bool Rect::intersectsRect(const FRect& r) const { return x < r.x + r.w && y < r.y + r.h && x + w > r.x && y + h > r.y; }
 bool Rect::intersectsLine(const Point& P1, const Point& P2) {
-	Rect result(P1, P2);
-	return SDL_IntersectRectAndLine(&rect, &result.x, &result.y, &result.w, &result.h);
+    Rect result(P1, P2);
+    return SDL_IntersectRectAndLine(&rect, &result.x, &result.y, &result.w, &result.h);
 }
 
 void Rect::rectUnion(const Rect& rect, Rect& result) const {
-	SDL_UnionRect(&this->rect, &rect.rect, &result.rect);
+    SDL_UnionRect(&this->rect, &rect.rect, &result.rect);
 }
 
 bool Rect::intersectRect(const Rect& rect, Rect& result) const {
-	return SDL_IntersectRect(&this->rect, &rect.rect, &result.rect);
+    return SDL_IntersectRect(&this->rect, &rect.rect, &result.rect);
 }
 bool Rect::intersectRect(const FRect& rect, FRect& result) const {
-	if (!intersectsRect(rect)) return false;
+    if (!intersectsRect(rect)) return false;
 
-	FPoint topLeft = FPoint::min(this->topLeft(), rect.topLeft());
-	FPoint bottomRight = FPoint::max(this->bottomRight(), rect.bottomRight());
-	result = { topLeft, bottomRight - topLeft };
+    FPoint topLeft = FPoint::min(this->topLeft(), rect.topLeft());
+    FPoint bottomRight = FPoint::max(this->bottomRight(), rect.bottomRight());
+    result = { topLeft, bottomRight - topLeft };
 
-	return true;
+    return true;
 }
 bool Rect::intersectLine(Point& P1, Point& P2) const {
-	return SDL_IntersectRectAndLine(&rect, &P1.x, &P1.y, &P2.w, &P2.h);
+    return SDL_IntersectRectAndLine(&rect, &P1.x, &P1.y, &P2.w, &P2.h);
 }
 
 #pragma region Rect arithmetic

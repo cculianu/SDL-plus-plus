@@ -5,7 +5,7 @@ using namespace SDL;
 Audio::Audio(const AudioSpec& desired, AudioSpec& obtained) {
     freeAudio = SDL_OpenAudio(const_cast<AudioSpec *>(&desired), &obtained) != -1;
     error = !freeAudio ? -1 : 0;
-}   
+}
 Audio::Audio(const AudioSpec& desired) {
     freeAudio = SDL_OpenAudio(const_cast<AudioSpec *>(&desired), NULL) != -1;
     error = !freeAudio ? -1 : 0;

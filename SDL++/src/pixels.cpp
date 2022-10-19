@@ -24,13 +24,13 @@ void PixelFormat::GetRGBA(Uint32 pixel, Uint8& r, Uint8& g, Uint8& b, Uint8& a) 
 void PixelFormat::GetRGBA(Uint32 pixel, Colour& c) const { SDL_GetRGBA(pixel, format, &c.r, &c.g, &c.b, &c.a); }
 
 PixelFormatEnum MasksToPixelFormatEnum(int bpp, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask) {
-	return (PixelFormatEnum)SDL_MasksToPixelFormatEnum(bpp, Rmask, Gmask, Bmask, Amask);
+    return (PixelFormatEnum)SDL_MasksToPixelFormatEnum(bpp, Rmask, Gmask, Bmask, Amask);
 }
 
 GammaRamp CalculateGammaRamp(float gamma) {
     GammaRamp ramp;
     SDL_CalculateGammaRamp(gamma, ramp.data());
-	return ramp;
+    return ramp;
 }
 
 } // namespace SDL

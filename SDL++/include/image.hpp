@@ -3,7 +3,7 @@
 #include "error.hpp"
 
 namespace SDL {
-	namespace IMG {
+    namespace IMG {
         const SDL_version* Linked_Version();
 
         enum class InitFlags
@@ -89,5 +89,5 @@ namespace SDL {
         template <class... Args>
         int SetError(const char* fmt, Args ...args);
         const char* GetError();
-	}
+    }
 }
